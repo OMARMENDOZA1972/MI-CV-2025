@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currículum Interactivo - Omar Abud</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f5f4;
+            color: #292524;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            width: 1.25rem;
+            height: 1.25rem;
+            border-radius: 50%;
+            left: -0.625rem;
+            top: 0;
+            background-color: #a8a29e;
+            border: 4px solid #f5f5f4;
+        }
+        .timeline-item.active::before {
+            background-color: #0891b2;
+        }
+        .details-content {
+            transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .details-content.open {
+            max-height: 500px;
+            opacity: 1;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .printable-only {
+            display: none;
+            font-family: 'Inter', sans-serif;
+            color: #000;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <header id="home" class="p-4 md:p-6 sticky top-0 bg-white/80 backdrop-blur-sm z-10 shadow-sm">
+        <nav class="container mx-auto flex justify-between items-center">
+            <div class="flex flex-col">
+                <h1 class="text-xl md:text-2xl font-bold text-cyan-700">Omar Abud</h1>
+                <p class="text-sm text-stone-600">Profesional en Transición al Desarrollo de Software</p>
+            </div>
+            <ul class="flex space-x-4 md:space-x-6 items-center">
+                <li class="hidden md:block"><a href="#profile" class="text-stone-600 hover:text-cyan-700 font-medium">Perfil</a></li>
+                <li class="hidden md:block"><a href="#experience" class="text-stone-600 hover:text-cyan-700 font-medium">Trayectoria</a></li>
+                <li class="hidden md:block"><a href="#skills" class="text-stone-600 hover:text-cyan-700 font-medium">Habilidades</a></li>
+                <li class="hidden md:block"><a href="#portfolio" class="text-stone-600 hover:text-cyan-700 font-medium">Portafolio</a></li>
+                <li><a id="downloadPdfBtn" href="#download-pdf" class="bg-cyan-600 text-white text-sm md:text-base font-medium py-2 px-4 rounded-lg hover:bg-cyan-700 transition-colors">Descargar PDF</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8">
+        <section id="profile" class="my-12 scroll-mt-20">
+            <div class="bg-white p-8 rounded-xl shadow-md flex flex-col md:flex-row items-center md:items-start gap-8">
+                <div class="flex-shrink-0">
+                    <img src="Omar.jpg" alt="Foto de perfil de Omar Abud" class="rounded-full w-32 h-32 border-4 border-stone-200 object-cover">
+                </div>
+                <div>
+                    <h2 class="text-3xl font-bold text-cyan-700 mb-4">Perfil Profesional</h2>
+                    <p class="text-lg text-stone-700 leading-relaxed mb-6">
+                        Profesional con más de 25 años de experiencia en roles de logística, administración y gestión, en una apasionante transición hacia el desarrollo de software. Mi objetivo es aplicar una sólida ética de trabajo, proactividad y meticulosidad para contribuir al éxito de proyectos tecnológicos innovadores. Cuento con una alta capacidad de adaptación, un fuerte compromiso con el trabajo en equipo y una dedicación constante al aprendizaje continuo.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center border-t border-stone-200 pt-6">
+                        <div class="bg-stone-50 p-4 rounded-lg">
+                            <h3 class="font-bold text-stone-800">Ubicación</h3>
+                            <p class="text-stone-600">Guaymallén, Mendoza</p>
+                        </div>
+                        <div class="bg-stone-50 p-4 rounded-lg">
+                            <h3 class="font-bold text-stone-800">Email</h3>
+                            <a href="mailto:omarabudmza@gmail.com" class="text-cyan-600 hover:underline">omarabudmza@gmail.com</a>
+                        </div>
+                        <div class="bg-stone-50 p-4 rounded-lg">
+                            <h3 class="font-bold text-stone-800">Teléfono</h3>
+                            <p class="text-stone-600">2612450078</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="experience" class="my-12 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-cyan-700 mb-8 text-center">Trayectoria Profesional Interactiva</h2>
+            <p class="text-center text-stone-600 max-w-2xl mx-auto mb-10">
+                A lo largo de más de dos décadas, he desarrollado una carrera sólida en gestión y logística. Ahora, estoy aplicando esa misma dedicación al mundo de la tecnología. Haz clic en cada rol para ver los detalles.
+            </p>
+            <div class="relative border-l-2 border-stone-300 ml-4 md:ml-0 md:mx-auto md:w-full md:max-w-3xl">
+            </div>
+        </section>
+
+        <section id="skills" class="my-12 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-cyan-700 mb-8 text-center">Habilidades Clave</h2>
+             <p class="text-center text-stone-600 max-w-2xl mx-auto mb-10">
+                Mi experiencia se divide en dos áreas principales: mis habilidades consolidadas en gestión empresarial y mis nuevas competencias en desarrollo de software, las cuales estoy expandiendo activamente.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-8 items-start">
+                <div class="md:col-span-3 bg-white p-6 rounded-xl shadow-md">
+                     <h3 class="font-bold text-xl text-stone-800 mb-4 text-center">Desarrollo Web (En Formación)</h3>
+                    <div class="chart-container">
+                        <canvas id="skillsChart"></canvas>
+                    </div>
+                </div>
+                <div class="md:col-span-2 bg-white p-6 rounded-xl shadow-md space-y-4">
+                    <div>
+                        <h3 class="font-bold text-xl text-stone-800 mb-4">Gestión Empresarial</h3>
+                        <ul class="list-disc list-inside text-stone-700 space-y-2">
+                            <li>Sistemas de Gestión: SAP y JDEdwards</li>
+                            <li>Optimización de Procesos (Sistema LEAN)</li>
+                            <li>Control de Inventario y Logística</li>
+                            <li>Gestión de Compras y Proveedores</li>
+                        </ul>
+                    </div>
+                    <div class="border-t border-stone-200 pt-4">
+                         <h3 class="font-bold text-xl text-stone-800 mb-4">Competencias Adicionales</h3>
+                        <ul class="list-disc list-inside text-stone-700 space-y-2">
+                            <li>Idiomas: Inglés (Intermedio), Italiano (Intermedio)</li>
+                            <li>Manejo de Redes Sociales</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="portfolio" class="my-12 scroll-mt-20 text-center">
+            <h2 class="text-3xl font-bold text-cyan-700 mb-4">Portafolio de Proyectos</h2>
+            <p class="text-stone-600 max-w-2xl mx-auto mb-8">
+                Estoy construyendo activamente proyectos para demostrar mis habilidades. Puedes seguir mi progreso y ver mi código en mi perfil de GitHub.
+            </p>
+            <a href="https://github.com/OMARMENDOZA1972" target="_blank" rel="noopener noreferrer" class="inline-block bg-cyan-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-cyan-700 transition-colors">
+                Visitar mi GitHub
+            </a>
+        </section>
+    </main>
+
+    <div id="pdf-content" class="printable-only p-8 max-w-4xl mx-auto"></div>
+
+    <footer class="bg-white mt-16 border-t">
+        <div class="container mx-auto p-6 text-center text-stone-600">
+            <p>&copy; 2025 Omar Abud. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const experienceData = [
+        {
+            company: 'LA CAMPIÑA',
+            period: '2019-2024',
+            role: 'Propietario',
+            details: [
+                'Gestión integral del negocio: atención al público, control de inventario y optimización de compras.',
+                'Desarrollo de habilidades de gestión, resolución de problemas y atención al cliente.'
+            ]
+        },
+        {
+            company: 'PERCAL SA',
+            period: '2017-2019',
+            role: 'Vendedor',
+            details: [
+                'Atención especializada al público y venta de materiales de construcción.',
+                'Asesoramiento experto en revestimientos, garantizando la satisfacción del cliente.'
+            ]
+        },
+        {
+            company: 'MONTEMAR COMPAÑÍA FINANCIERA',
+            period: '2016-2017',
+            role: 'Cajero',
+            details: [
+                'Gestión de cobranzas de impuestos y tarjetas.',
+                'Realización de operaciones de cambio de moneda extranjera con precisión.'
+            ]
+        },
+        {
+            company: 'TARJETA NEVADA',
+            period: '2013-2016',
+            role: 'Tesorero y Coordinador de Cajas',
+            details: [
+                'Supervisión de reposición de cajero automático.',
+                'Control y gestión de recursos para el proceso de cobranzas.',
+                'Capacitación en el Sistema LEAN, mejorando la eficiencia operativa.',
+                'Control de venta y reposición de entradas de espectáculos.'
+            ]
+        },
+        {
+            company: 'MENDOZA PLAZA SHOPPING',
+            period: '1997-2013',
+            role: 'Encargado de Logística y Compras',
+            details: [
+                'Gestión y optimización de recursos: Control exhaustivo de stock e inventarios.',
+                'Administración y optimización de recursos en compras para mantenimiento edilicio.',
+                'Supervisión y contratación de empresas tercerizadas.',
+                'Coordinación de operaciones: Dominio en sistemas SAP y JDEdwards, y coordinación de promociones.'
+            ]
+        }
+    ];
+
+    const timelineContainer = document.querySelector('#experience .relative');
+
+    experienceData.forEach((job, index) => {
+        const item = document.createElement('div');
+        item.className = 'timeline-item mb-8 pl-8 relative cursor-pointer';
+
+        let detailsHTML = job.details.map(detail => `<li>${detail}</li>`).join('');
+
+        item.innerHTML = `
+            <div class="flex justify-between items-center">
+                <div>
+                    <h3 class="text-lg font-bold text-stone-800">${job.role}</h3>
+                    <p class="font-medium text-cyan-600">${job.company}</p>
+                    <p class="text-sm text-stone-500">${job.period}</p>
+                </div>
+                 <span class="text-cyan-600 text-2xl transform transition-transform duration-300">&#9662;</span>
+            </div>
+            <div class="details-content mt-4">
+                <ul class="list-disc list-inside text-stone-600 space-y-2 bg-stone-50 p-4 rounded-md">
+                    ${detailsHTML}
+                </ul>
+            </div>
+        `;
+
+        timelineContainer.appendChild(item);
+
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            const content = item.querySelector('.details-content');
+            const arrow = item.querySelector('span');
+            document.querySelectorAll('.timeline-item').forEach(el => {
+                if (el !== item) {
+                    el.classList.remove('active');
+                    el.querySelector('.details-content').classList.remove('open');
+                    el.querySelector('span').style.transform = 'rotate(0deg)';
+                }
+            });
+
+            item.classList.toggle('active');
+            content.classList.toggle('open');
+            if (content.classList.contains('open')) {
+                 arrow.style.transform = 'rotate(180deg)';
+            } else {
+                 arrow.style.transform = 'rotate(0deg)';
+            }
+        });
+
+        if (index === 0) {
+            item.click();
+        }
+    });
+
+    const ctx = document.getElementById('skillsChart').getContext('2d');
+    const skillsChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['HTML', 'CSS', 'JavaScript', 'PHP', 'GitHub'],
+            datasets: [{
+                label: 'Nivel de Habilidad (en formación)',
+                data: [95, 85, 70, 50, 80],
+                backgroundColor: 'rgba(8, 145, 178, 0.6)',
+                borderColor: 'rgba(8, 145, 178, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: {
+                       callback: function(value) {
+                           return value + '%'
+                       }
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return ` Progreso: ${context.raw}% (Aprendiendo activamente)`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    const downloadPdfBtn = document.getElementById('downloadPdfBtn');
+    downloadPdfBtn.addEventListener('click', (e) => {
+        e.preventDefault(); // Previene la navegación
+        const { jsPDF } = window.jspdf;
+        const pdfContent = document.getElementById('pdf-content');
+
+        // Generar contenido para el PDF
+        pdfContent.innerHTML = `
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <h1 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.25rem;">Omar Abud</h1>
+                <p style="font-size: 0.875rem;">52 años - Casado - Argentino</p>
+                <p style="font-size: 0.875rem;">Pedro Vargas 3856 - Villa Nueva Guaymallén - Mendoza</p>
+                <p style="font-size: 0.875rem;">Tel. 2612450078 - omarabudmza@gmail.com</p>
+            </div>
+            
+            <h2 style="font-size: 1.25rem; font-weight: 700; border-bottom: 1px solid #e5e5e5; padding-bottom: 0.25rem; margin-bottom: 1rem;">PERFIL PROFESIONAL</h2>
+            <p style="margin-bottom: 1.5rem; font-size: 0.875rem;">Profesional con más de 25 años de experiencia en roles de logística, administración y gestión, en una apasionante transición hacia el desarrollo de software. Mi objetivo es aplicar una sólida ética de trabajo, proactividad y meticulosidad para contribuir al éxito de proyectos tecnológicos innovadores. Cuento con una alta capacidad de adaptación, un fuerte compromiso con el trabajo en equipo y una dedicación constante al aprendizaje continuo.</p>
+            
+            <h2 style="font-size: 1.25rem; font-weight: 700; border-bottom: 1px solid #e5e5e5; padding-bottom: 0.25rem; margin-bottom: 1rem;">FORMACIÓN Y HABILIDADES TÉCNICAS</h2>
+            <ul style="list-style-type: disc; padding-left: 1.25rem; margin-bottom: 1.5rem; font-size: 0.875rem; line-height: 1.5;">
+                <li>Programación (en formación): HTML, CSS, JavaScript, PHP y GitHub.</li>
+                <li>Conceptos en desarrollo: Lógica de programación y estructuras de datos básicas.</li>
+                <li>Manejo de Redes Sociales: Conocimiento y uso de plataformas.</li>
+                <li>Sistemas de Gestión Empresarial: Experiencia en el uso y gestión de datos con SAP y JDEdwards.</li>
+                <li>Idiomas: Inglés intermedio, Italiano intermedio.</li>
+                <li>Estudios Formales: Primaria y Secundaria completas.</li>
+            </ul>
+
+            <h2 style="font-size: 1.25rem; font-weight: 700; border-bottom: 1px solid #e5e5e5; padding-bottom: 0.25rem; margin-bottom: 1rem;">EXPERIENCIA LABORAL</h2>
+            ${experienceData.map(job => `
+                <div style="margin-bottom: 1rem;">
+                    <p style="font-size: 1rem; font-weight: 700;">${job.role} <span style="font-weight: 400; color: #78716c;">(${job.period})</span></p>
+                    <p style="font-size: 0.875rem; font-weight: 600; color: #0891b2;">${job.company}</p>
+                    <ul style="list-style-type: disc; padding-left: 1.25rem; font-size: 0.75rem; margin-top: 0.25rem; line-height: 1.5;">
+                        ${job.details.map(detail => `<li>${detail}</li>`).join('')}
+                    </ul>
+                </div>
+            `).join('')}
+
+            <h2 style="font-size: 1.25rem; font-weight: 700; border-bottom: 1px solid #e5e5e5; padding-bottom: 0.25rem; margin-bottom: 1rem;">PORTAFOLIO DE PROYECTOS</h2>
+            <p style="font-size: 0.875rem;">Puedes ver mis proyectos en mi perfil de GitHub: <a href="https://github.com/OMARMENDOZA1972" style="color: #0891b2;">https://github.com/OMARMENDOZA1972</a></p>
+        `;
+
+        const doc = new jsPDF('p', 'pt', 'a4');
+        doc.html(pdfContent, {
+            callback: function (doc) {
+                doc.save('Curriculum_Omar_Abud.pdf');
+                pdfContent.innerHTML = '';
+            },
+            x: 10,
+            y: 10,
+            autoPaging: 'text',
+            html2canvas: { scale: 0.5 } // Usamos una escala menor para asegurar que todo encaje
+        });
+    });
+});
+</script>
+</body>
+</html>
