@@ -6,11 +6,12 @@
     <title>Currículum Interactivo - Omar Abud</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-    
+   
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -60,6 +61,39 @@
             font-family: 'Inter', sans-serif;
             color: #000;
         }
+
+        /* Loading Overlay Styles */
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease-in-out;
+        }
+        #loading-overlay.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #0891b2;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -74,6 +108,7 @@
                 <li class="hidden md:block"><a href="#experience" class="text-stone-600 hover:text-cyan-700 font-medium">Trayectoria</a></li>
                 <li class="hidden md:block"><a href="#skills" class="text-stone-600 hover:text-cyan-700 font-medium">Habilidades</a></li>
                 <li class="hidden md:block"><a href="#portfolio" class="text-stone-600 hover:text-cyan-700 font-medium">Portafolio</a></li>
+                <li><a id="downloadPdfBtn" href="#download-pdf" class="bg-cyan-600 text-white text-sm md:text-base font-medium py-2 px-4 rounded-lg hover:bg-cyan-700 transition-colors cursor-pointer">Descargar PDF</a></li>
             </ul>
         </nav>
     </header>
@@ -160,11 +195,17 @@
         </section>
     </main>
 
+    <div id="loading-overlay">
+        <div class="flex flex-col items-center">
+            <div class="spinner"></div>
+            <p class="text-stone-800 mt-4">Generando PDF...</p>
+        </div>
+    </div>
     <div id="pdf-content" class="printable-only p-8 max-w-4xl mx-auto"></div>
 
     <footer class="bg-white mt-16 border-t">
         <div class="container mx-auto p-6 text-center text-stone-600">
-            <p>&copy; 2025 Omar Abud. Todos los derechos reservados.</p>
+            <p>&copy; 2024 Omar Abud. Todos los derechos reservados.</p>
         </div>
     </footer>
 
@@ -318,58 +359,75 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     const downloadPdfBtn = document.getElementById('downloadPdfBtn');
+    const loadingOverlay = document.getElementById('loading-overlay');
+    const pdfContent = document.getElementById('pdf-content');
+
     downloadPdfBtn.addEventListener('click', (e) => {
-        e.preventDefault(); // Previene la navegación
+        e.preventDefault();
+        
+        loadingOverlay.classList.add('visible');
+
         const { jsPDF } = window.jspdf;
-        const pdfContent = document.getElementById('pdf-content');
+        const input = document.getElementById('pdf-content');
+        
+        // Define la variable 'doc' antes de usarla
+        const doc = new jsPDF('p', 'pt', 'a4');
 
-        // Generar contenido para el PDF
-        pdfContent.innerHTML = `
-            <div style="text-align: center; margin-bottom: 2rem;">
-                <h1 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.25rem;">Omar Abud</h1>
-                <p style="font-size: 0.875rem;">52 años - Casado - Argentino</p>
-                <p style="font-size: 0.875rem;">Pedro Vargas 3856 - Villa Nueva Guaymallén - Mendoza</p>
-                <p style="font-size: 0.875rem;">Tel. 2612450078 - omarabudmza@gmail.com</p>
-            </div>
-            
-            <h2 style="font-size: 1.25rem; font-weight: 700; border-bottom: 1px solid #e5e5e5; padding-bottom: 0.25rem; margin-bottom: 1rem;">PERFIL PROFESIONAL</h2>
-            <p style="margin-bottom: 1.5rem; font-size: 0.875rem;">Profesional con más de 25 años de experiencia en roles de logística, administración y gestión, en una apasionante transición hacia el desarrollo de software. Mi objetivo es aplicar una sólida ética de trabajo, proactividad y meticulosidad para contribuir al éxito de proyectos tecnológicos innovadores. Cuento con una alta capacidad de adaptación, un fuerte compromiso con el trabajo en equipo y una dedicación constante al aprendizaje continuo.</p>
-            
-            <h2 style="font-size: 1.25rem; font-weight: 700; border-bottom: 1px solid #e5e5e5; padding-bottom: 0.25rem; margin-bottom: 1rem;">FORMACIÓN Y HABILIDADES TÉCNICAS</h2>
-            <ul style="list-style-type: disc; padding-left: 1.25rem; margin-bottom: 1.5rem; font-size: 0.875rem; line-height: 1.5;">
-                <li>Programación (en formación): HTML, CSS, JavaScript, PHP y GitHub.</li>
-                <li>Conceptos en desarrollo: Lógica de programación y estructuras de datos básicas.</li>
-                <li>Manejo de Redes Sociales: Conocimiento y uso de plataformas.</li>
-                <li>Sistemas de Gestión Empresarial: Experiencia en el uso y gestión de datos con SAP y JDEdwards.</li>
-                <li>Idiomas: Inglés intermedio, Italiano intermedio.</li>
-                <li>Estudios Formales: Primaria y Secundaria completas.</li>
-            </ul>
+        // Elimina la clase que oculta el div para que html2canvas pueda capturarlo
+        input.classList.remove('printable-only');
 
-            <h2 style="font-size: 1.25rem; font-weight: 700; border-bottom: 1px solid #e5e5e5; padding-bottom: 0.25rem; margin-bottom: 1rem;">EXPERIENCIA LABORAL</h2>
-            ${experienceData.map(job => `
-                <div style="margin-bottom: 1rem;">
-                    <p style="font-size: 1rem; font-weight: 700;">${job.role} <span style="font-weight: 400; color: #78716c;">(${job.period})</span></p>
-                    <p style="font-size: 0.875rem; font-weight: 600; color: #0891b2;">${job.company}</p>
-                    <ul style="list-style-type: disc; padding-left: 1.25rem; font-size: 0.75rem; margin-top: 0.25rem; line-height: 1.5;">
-                        ${job.details.map(detail => `<li>${detail}</li>`).join('')}
-                    </ul>
+        // Genera el contenido HTML para el PDF con formato mejorado
+        input.innerHTML = `
+            <div style="font-family: 'Inter', sans-serif; padding: 20pt;">
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <h1 style="font-size: 20pt; font-weight: 700; color: #0891b2; margin-bottom: 0.25rem;">Omar Abud</h1>
+                    <p style="font-size: 10pt; color: #525252;">52 años - Casado - Argentino</p>
+                    <p style="font-size: 10pt; color: #525252;">Pedro Vargas 3856 - Villa Nueva Guaymallén - Mendoza</p>
+                    <p style="font-size: 10pt; color: #525252;">Tel. 2612450078 - omarabudmza@gmail.com</p>
                 </div>
-            `).join('')}
+                
+                <h2 style="font-size: 16pt; font-weight: 700; color: #292524; border-bottom: 1px solid #d4d4d4; padding-bottom: 4pt; margin-bottom: 12pt;">PERFIL PROFESIONAL</h2>
+                <p style="margin-bottom: 1.5rem; font-size: 10pt; line-height: 1.4;">Profesional con más de 25 años de experiencia en roles de logística, administración y gestión, en una apasionante transición hacia el desarrollo de software. Mi objetivo es aplicar una sólida ética de trabajo, proactividad y meticulosidad para contribuir al éxito de proyectos tecnológicos innovadores. Cuento con una alta capacidad de adaptación, un fuerte compromiso con el trabajo en equipo y una dedicación constante al aprendizaje continuo.</p>
+                
+                <h2 style="font-size: 16pt; font-weight: 700; color: #292524; border-bottom: 1px solid #d4d4d4; padding-bottom: 4pt; margin-bottom: 12pt;">FORMACIÓN Y HABILIDADES TÉCNICAS</h2>
+                <ul style="list-style-type: disc; padding-left: 20pt; margin-bottom: 1.5rem; font-size: 10pt; line-height: 1.5;">
+                    <li><b>Programación (en formación):</b> HTML, CSS, JavaScript, PHP y GitHub.</li>
+                    <li><b>Conceptos en desarrollo:</b> Lógica de programación y estructuras de datos básicas.</li>
+                    <li><b>Manejo de Redes Sociales:</b> Conocimiento y uso de plataformas.</li>
+                    <li><b>Sistemas de Gestión Empresarial:</b> Experiencia en el uso y gestión de datos con SAP y JDEdwards.</li>
+                    <li><b>Idiomas:</b> Inglés intermedio, Italiano intermedio.</li>
+                    <li><b>Estudios Formales:</b> Primaria y Secundaria completas.</li>
+                </ul>
 
-            <h2 style="font-size: 1.25rem; font-weight: 700; border-bottom: 1px solid #e5e5e5; padding-bottom: 0.25rem; margin-bottom: 1rem;">PORTAFOLIO DE PROYECTOS</h2>
-            <p style="font-size: 0.875rem;">Puedes ver mis proyectos en mi perfil de GitHub: <a href="https://github.com/OMARMENDOZA1972" style="color: #0891b2;">https://github.com/OMARMENDOZA1972</a></p>
+                <h2 style="font-size: 16pt; font-weight: 700; color: #292524; border-bottom: 1px solid #d4d4d4; padding-bottom: 4pt; margin-bottom: 12pt;">EXPERIENCIA LABORAL</h2>
+                ${experienceData.map(job => `
+                    <div style="margin-bottom: 16pt;">
+                        <p style="font-size: 11pt; font-weight: 700;">${job.role} <span style="font-weight: 400; color: #78716c;">(${job.period})</span></p>
+                        <p style="font-size: 10pt; font-weight: 600; color: #0891b2; margin-top: 4pt;">${job.company}</p>
+                        <ul style="list-style-type: disc; padding-left: 20pt; font-size: 9pt; margin-top: 4pt; line-height: 1.4;">
+                            ${job.details.map(detail => `<li>${detail}</li>`).join('')}
+                        </ul>
+                    </div>
+                `).join('')}
+
+                <h2 style="font-size: 16pt; font-weight: 700; color: #292524; border-bottom: 1px solid #d4d4d4; padding-bottom: 4pt; margin-bottom: 12pt;">PORTAFOLIO DE PROYECTOS</h2>
+                <p style="font-size: 10pt;">Puedes ver mis proyectos en mi perfil de GitHub: <a href="https://github.com/OMARMENDOZA1972" style="color: #0891b2;">https://github.com/OMARMENDOZA1972</a></p>
+            </div>
         `;
 
-        const doc = new jsPDF('p', 'pt', 'a4');
-        doc.html(pdfContent, {
+        // Crea el documento PDF
+        doc.html(input, {
             callback: function (doc) {
                 doc.save('Curriculum_Omar_Abud.pdf');
-                pdfContent.innerHTML = '';
+                // Vuelve a ocultar el div y el overlay después de guardar
+                input.classList.add('printable-only');
+                loadingOverlay.classList.remove('visible');
+                input.innerHTML = '';
             },
             x: 10,
             y: 10,
             autoPaging: 'text',
-            html2canvas: { scale: 0.5 } // Usamos una escala menor para asegurar que todo encaje
+            html2canvas: { scale: 0.8 } // Aumentamos la escala para mejor legibilidad
         });
     });
 });
